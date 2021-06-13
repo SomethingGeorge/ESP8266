@@ -2,6 +2,7 @@
 Configuring Wifi IOT Device
 Purchase a ESP8266 Board (my board came from Amazon and is by Hiletgo)
 Initialize the board and flash using these instructions (http://hiletgo.com/ProductDetail/1906570.html)
+Note: Flash utility for 64 bit Windows has been uploaded
 
 ***********INSTRUCTIONS HERE ALSO**************
 Brand Name:  HiLetgo 
