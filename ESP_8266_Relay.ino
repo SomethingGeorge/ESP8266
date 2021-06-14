@@ -20,8 +20,8 @@
 int relayGPIOs[NUM_RELAYS] = {5, 4, 14, 12, 13};
 
 // Replace with your network credentials
-const char* ssid = "BlackTruth_ORB";
-const char* password = "7192014207";
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
 
 const char* PARAM_INPUT_1 = "relay";  
 const char* PARAM_INPUT_2 = "state";
