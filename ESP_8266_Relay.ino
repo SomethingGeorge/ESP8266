@@ -49,10 +49,24 @@ const char index_html[] PROGMEM = R"rawliteral(
 <body>
   <h2>ESP Web Server</h2>
   %BUTTONPLACEHOLDER%
+  <!-- <button onclick="toggleCheckbox(this)" type="button" title="Testing">Testing</button> -->
 <script>function toggleCheckbox(element) {
+
   var xhr = new XMLHttpRequest();
-  if(element.checked){ xhr.open("GET", "/update?relay="+element.id+"&state=1", true); }
-  else { xhr.open("GET", "/update?relay="+element.id+"&state=0", true); }
+
+    var url = "https://prod-73.eastus.logic.azure.com:443/workflows/564da6e44ca443dfbe0df97bd476e3af/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=4C-uGRAwak9Q6zYUVJEEaTIrDqhzDrUFaZb1Q9hpWZM";
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  
+  
+  if(element.checked) {
+        xhr.send(JSON.stringify({ "incrementCounter": 1})); 
+      xhr.open("GET", "/update?relay="+element.id+"&state=1", true); 
+    }
+  else { 
+      xhr.open("GET", "/update?relay="+element.id+"&state=0", true); 
+}
+  
   xhr.send();
 }</script>
 </body>
