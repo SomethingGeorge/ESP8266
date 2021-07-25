@@ -20,8 +20,8 @@
 int relayGPIOs[NUM_RELAYS] = {5, 4, 14, 12, 13};
 
 // Replace with your network credentials
-const char* ssid = "SSID";
-const char* password = "PASSWORD";
+const char* ssid = "_DNA2G";
+const char* password = "DwainNAshSince1905";
 
 const char* PARAM_INPUT_1 = "relay";  
 const char* PARAM_INPUT_2 = "state";
@@ -56,8 +56,9 @@ const char index_html[] PROGMEM = R"rawliteral(
 
     var url = "http://iot.dwain.me/";
    
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  
+   xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+   xhr.open("GET", url);
+   xhr.send(); 
   
   if(element.checked) {       
       xhr.open("GET", "/update?relay="+element.id+"&state=1", true); 
@@ -67,8 +68,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   }
    xhr.send();
    
-   xhr.open("GET", url);
-   xhr.send(JSON.stringify({ "incrementCounter": 1})); 
+   
  
 }</script>
 </body>
@@ -173,6 +173,10 @@ void setup(){
   });
   // Start server
   server.begin();
+}
+
+void SendNotification(){
+
 }
   
 void loop() {

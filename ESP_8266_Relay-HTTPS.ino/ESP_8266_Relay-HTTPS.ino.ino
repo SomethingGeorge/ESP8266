@@ -1,3 +1,10 @@
+#include <b64.h>
+#include <HttpClient.h>
+#include <SPI.h>
+#include <HttpClient.h>
+#include <Ethernet.h>
+#include <EthernetClient.h>
+
 /*********
   Rui Santos
   Complete project details at https://RandomNerdTutorials.com/esp8266-relay-module-ac-web-server/
@@ -20,8 +27,11 @@
 int relayGPIOs[NUM_RELAYS] = {5, 4, 14, 12, 13};
 
 // Replace with your network credentials
-const char* ssid = "_DNA2G";
-const char* password = "freewifi";
+const char* ssid = "BlackTruth_ORB";
+const char* password = "7192014207";
+
+//const char* ssid = "_DNA_GUEST";
+//const char* password = "freewifi";
 
 const char* PARAM_INPUT_1 = "relay";  
 const char* PARAM_INPUT_2 = "state";
@@ -51,23 +61,25 @@ const char index_html[] PROGMEM = R"rawliteral(
   %BUTTONPLACEHOLDER%
   <!-- <button onclick="toggleCheckbox(this)" type="button" title="Testing">Testing</button> -->
 <script>function toggleCheckbox(element) {
-
+  
   var xhr = new XMLHttpRequest();
-
-    var url = "https://prod-73.eastus.logic.azure.com:443/workflows/564da6e44ca443dfbe0df97bd476e3af/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=4C-uGRAwak9Q6zYUVJEEaTIrDqhzDrUFaZb1Q9hpWZM";
-    xhr.open("POST", url);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-  
-  
+   
   if(element.checked) {
-        xhr.send(JSON.stringify({ "incrementCounter": 1})); 
-      xhr.open("GET", "/update?relay="+element.id+"&state=1", true); 
-    }
+        
+       xhr.open("GET", "/update?relay="+element.id+"&state=1", true); 
+   }
   else { 
-      xhr.open("GET", "/update?relay="+element.id+"&state=0", true); 
+       xhr.open("GET", "/update?relay="+element.id+"&state=0", true); 
 }
   
   xhr.send();
+
+  var xhr1 = new XMLHttpRequest();
+    var url = "http://prod-73.eastus.logic.azure.com/workflows/564da6e44ca443dfbe0df97bd476e3af/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=4C-uGRAwak9Q6zYUVJEEaTIrDqhzDrUFaZb1Q9hpWZM";
+    xhr1.open("POST", url);
+    xhr1.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    
+  xhr1.send(JSON.stringify({ "incrementCounter": 1}));
 }</script>
 </body>
 </html>
@@ -93,8 +105,6 @@ String relayState(int numRelay){
   return "";
 }
 
-
-
 // Replaces placeholder with button section in your web page
 String processor(const String& var){
   //Serial.println(var);
@@ -108,6 +118,7 @@ String processor(const String& var){
   }
   return String();
 }
+
 
 
 void setup(){
@@ -142,6 +153,9 @@ void setup(){
 
   // Send a GET request to <ESP_IP>/update?relay=<inputMessage>&state=<inputMessage2>
   server.on("/update", HTTP_GET, [] (AsyncWebServerRequest *request) {
+    
+    SendNotification();
+    
     String inputMessage;
     String inputParam;
     String inputMessage2;
@@ -170,6 +184,26 @@ void setup(){
   });
   // Start server
   server.begin();
+}
+
+void SendNotification(){
+    int httpResponse;
+    
+    EthernetClient c;
+    HttpClient http(c);
+
+    Serial.print("Sending notification");
+    
+    http.get("http://iot.dwain.me/","/");
+    
+httpResponse = http.responseStatusCode();
+    if (httpResponse >= 0)
+    {
+     Serial.print("http response code" + httpResponse);
+    }
+    
+    
+    
 }
   
 void loop() {
