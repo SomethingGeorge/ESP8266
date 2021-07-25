@@ -30,8 +30,6 @@ int relayGPIOs[NUM_RELAYS] = {5, 4, 14, 12, 13};
 const char* ssid = "BlackTruth_ORB";
 const char* password = "7192014207";
 
-//const char* ssid = "_DNA_GUEST";
-//const char* password = "freewifi";
 
 const char* PARAM_INPUT_1 = "relay";  
 const char* PARAM_INPUT_2 = "state";
