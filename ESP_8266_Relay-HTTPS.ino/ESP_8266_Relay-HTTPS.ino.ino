@@ -72,16 +72,32 @@ const char index_html[] PROGMEM = R"rawliteral(
   
   xhr.send();
 
-  var xhr1 = new XMLHttpRequest();
-    var url = "http://prod-73.eastus.logic.azure.com/workflows/564da6e44ca443dfbe0df97bd476e3af/triggers/request/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Frequest%2Frun&sv=1.0&sig=4C-uGRAwak9Q6zYUVJEEaTIrDqhzDrUFaZb1Q9hpWZM";
-    xhr1.open("POST", url);
-    xhr1.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    
-  xhr1.send(JSON.stringify({ "incrementCounter": 1}));
 }</script>
 </body>
 </html>
 )rawliteral";
+
+
+void SendNotification(){
+    int httpResponse;
+    
+    EthernetClient c;
+    HttpClient http(c);
+
+    Serial.println("Sending notification");
+    
+    http.get("http://iot.dwain.me","/");
+    
+httpResponse = http.responseStatusCode();
+    //if (httpResponse >= 0)
+   // {
+     Serial.println("http response code" + httpResponse);
+    //}
+    
+    
+    
+}
+
 
 String relayState(int numRelay){
   if(RELAY_NO){
@@ -147,13 +163,15 @@ void setup(){
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send_P(200, "text/html", index_html, processor);
+     Serial.println("1st Get Executed ");
+      SendNotification();
   });
 
   // Send a GET request to <ESP_IP>/update?relay=<inputMessage>&state=<inputMessage2>
   server.on("/update", HTTP_GET, [] (AsyncWebServerRequest *request) {
     
-    SendNotification();
-    
+    Serial.println("2nd Get Executed ");
+    SendNotification(); 
     String inputMessage;
     String inputParam;
     String inputMessage2;
@@ -165,11 +183,13 @@ void setup(){
       inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
       inputParam2 = PARAM_INPUT_2;
       if(RELAY_NO){
-        Serial.print("NO ");
+            SendNotification();
+            Serial.println("NO ");
         digitalWrite(relayGPIOs[inputMessage.toInt()-1], !inputMessage2.toInt());
       }
       else{
-        Serial.print("NC ");
+        SendNotification();
+        Serial.println("NC ");
         digitalWrite(relayGPIOs[inputMessage.toInt()-1], inputMessage2.toInt());
       }
     }
@@ -184,25 +204,6 @@ void setup(){
   server.begin();
 }
 
-void SendNotification(){
-    int httpResponse;
-    
-    EthernetClient c;
-    HttpClient http(c);
-
-    Serial.print("Sending notification");
-    
-    http.get("http://iot.dwain.me/","/");
-    
-httpResponse = http.responseStatusCode();
-    if (httpResponse >= 0)
-    {
-     Serial.print("http response code" + httpResponse);
-    }
-    
-    
-    
-}
   
 void loop() {
 
